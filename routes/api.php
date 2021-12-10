@@ -24,4 +24,6 @@ Route::group([ 'prefix' => 'v1', 'middleware' => ['auth:sanctum'] ], function ()
     Route::post('/login', 'AuthController@login')->withoutMiddleware('auth:sanctum');
     Route::get('/user', 'AuthController@getAuthUser');
     Route::get('/logout', 'AuthController@logout');
+
+    Route::apiResource('/product', 'ProductController');
 });

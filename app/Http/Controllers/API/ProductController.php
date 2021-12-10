@@ -5,17 +5,26 @@ namespace App\Http\Controllers\API;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\ProductRepository;
 
 class ProductController extends Controller
 {
+    public $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     /**
      * Display a listing of the resource.
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $product = $this->productRepository->getAll($request);
+        return response()->json(['response' => 'Success', 'product' => $product], 200);
     }
 
     /**
