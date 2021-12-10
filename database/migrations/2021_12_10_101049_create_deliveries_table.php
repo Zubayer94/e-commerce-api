@@ -15,14 +15,7 @@ class CreateDeliveriesTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
-            $table->string('UID');
-            $table->double('product_price', 8, 2);
-            $table->string('status', 100);
-            $table->unsignedInteger('unit');
-            $table->foreignId('user_id')->nullable()->constrained("users")->nullOnDelete();
-            $table->foreignId('product_id')->nullable()->constrained("products")->nullOnDelete();
-            $table->foreignId('order_id')->nullable()->constrained("orders")->nullOnDelete();
-
+            $table->foreignId('order_id')->nullable()->constrained("orders");
             $table->timestamps();
         });
     }

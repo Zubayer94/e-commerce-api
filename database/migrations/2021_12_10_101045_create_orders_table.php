@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->string('UID');
             $table->double('product_price', 8, 2);
             $table->string('status', 100);
-            $table->unsignedInteger('unit');
+            $table->unsignedSmallInteger('unit');
             $table->foreignId('user_id')->nullable()->constrained("users")->nullOnDelete();
             $table->foreignId('product_id')->nullable()->constrained("products")->nullOnDelete();
 
