@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\OrderHistory;
+use App\Models\Delivery;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class OrderHistoryController extends Controller
+class DeliveryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +32,10 @@ class OrderHistoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\OrderHistory  $orderHistory
+     * @param  \App\Models\Delivery  $delivery
      * @return \Illuminate\Http\Response
      */
-    public function show(OrderHistory $orderHistory)
+    public function show(Delivery $delivery)
     {
         //
     }
@@ -43,10 +44,10 @@ class OrderHistoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\OrderHistory  $orderHistory
+     * @param  \App\Models\Delivery  $delivery
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, OrderHistory $orderHistory)
+    public function update(Request $request, Delivery $delivery)
     {
         //
     }
@@ -54,10 +55,10 @@ class OrderHistoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\OrderHistory  $orderHistory
+     * @param  \App\Models\Delivery  $delivery
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrderHistory $orderHistory)
+    public function destroy(Delivery $delivery)
     {
         //
     }
