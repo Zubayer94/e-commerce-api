@@ -25,5 +25,5 @@ Route::group([ 'prefix' => 'v1', 'middleware' => ['auth:sanctum'] ], function ()
     Route::get('/user', 'AuthController@getAuthUser');
     Route::get('/logout', 'AuthController@logout');
 
-    Route::apiResource('/product', 'ProductController');
+    Route::apiResource('/products', 'Admin\AdminProductController');
 });

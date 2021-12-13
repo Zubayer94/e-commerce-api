@@ -9,6 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $table = 'products';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,4 +24,9 @@ class Product extends Model
         'description',
         'qty',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

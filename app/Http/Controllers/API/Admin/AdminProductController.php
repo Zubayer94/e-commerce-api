@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Admin;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
 
-class ProductController extends Controller
+class AdminProductController extends Controller
 {
     public $productRepository;
 
@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $product = $this->productRepository->getAll($request);
-        return response()->json(['response' => 'Success', 'product' => $product], 200);
+        return response()->json(['response' => 'Success', 'products' => $product], 200);
     }
 
     /**
@@ -69,6 +69,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        try {
+            $post = $this->productRepository->delete($product->id);
+            return response()->json(['response' => 'Success', 'post' => $post], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 }
