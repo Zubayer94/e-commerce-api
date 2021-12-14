@@ -1,21 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Admin;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\CategoryRepository;
+use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class AdminCategoryController extends Controller
 {
+    public $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $categories = $this->categoryRepository->getAll($request);
+        return response()->json(['response' => 'Success', 'categories' => $categories], 200);
     }
 
     /**
@@ -60,6 +69,11 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category = $this->categoryRepository->delete($category->id);
+            return response()->json(['response' => 'Success', 'category' => $category], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 }

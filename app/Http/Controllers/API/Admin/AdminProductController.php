@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
+use Illuminate\Support\Facades\Validator;
 
 class AdminProductController extends Controller
 {
@@ -35,7 +36,26 @@ class AdminProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'title' => 'required|string|max:250',
+            'price' => 'required|string|max:250',
+            'unit' => 'required|string|max:250',
+            'categoryId' => 'required|string|max:250',
+            'image' => 'required|string|max:250',
+            'description' => 'required|string',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
+
+        try {
+            $post = $this->postRepository->create($request);
+            return response()->json(['response' => 'success', 'post' => $post], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
@@ -70,8 +90,8 @@ class AdminProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            $post = $this->productRepository->delete($product->id);
-            return response()->json(['response' => 'Success', 'post' => $post], 200);
+            $product = $this->productRepository->delete($product->id);
+            return response()->json(['response' => 'Success', 'product' => $product], 200);
         } catch (\Illuminate\Database\QueryException $ex) {
             return response()->json(['response' => $ex->getMessage()], 404);
         }
