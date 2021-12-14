@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->double('price', 8, 2);
-            $table->string('image');
+            $table->longText('image');
             $table->text('description');
             $table->unsignedSmallInteger('qty');
             $table->foreignId('category_id')->nullable()->constrained("categories");
