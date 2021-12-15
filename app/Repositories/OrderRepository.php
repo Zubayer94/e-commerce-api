@@ -21,7 +21,7 @@ class OrderRepository implements CrudInterface
         ->leftJoin('users', 'orders.user_id', '=', 'users.id')
         ->select('orders.id', 'orders.uid', 'orders.product_price', 'orders.unit', 'orders.status', 'orders.created_at','products.title as product_title', 'products.image', 'users.name as u_name')
         ->when(!empty($uid), function ($query) use ($uid) {
-            $query->where('orders.uid', $uid);
+            $query->where('orders.uid', 'like', "$uid%");
         })
             ->orderBy('orders.id', 'desc')
             ->paginate($length);
@@ -31,7 +31,7 @@ class OrderRepository implements CrudInterface
     public function create(Request $request)
     {
         $data = $request->only(['status', 'unit', 'product_price', 'product_id', 'user_id']);
-        $data['uid'] = 'Or-'. time() . Str::random(1);
+        $data['uid'] = 'Or-'. time() . Str::random(1) . rand(10, 99);
         $order = Order::create($data);
         $order = Order::findOrfail($order->id);
         return $order;
