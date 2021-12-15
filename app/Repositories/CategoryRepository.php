@@ -40,7 +40,7 @@ class CategoryRepository implements CrudInterface
 
     public function create(Request $request)
     {
-        $data = $request->only(['title', 'slug', 'description', 'is_active']);
+        $data = $request->only(['title', 'is_active', 'description']);
         $data['slug'] = Str::slug($request->input('title'), '-');
         $category = Category::create($data);
         $category = Category::findOrfail($category->id);
@@ -55,7 +55,11 @@ class CategoryRepository implements CrudInterface
 
     public function update(Request $request, $id)
     {
-        
+        $category = Category::findOrfail($id);
+        $data = $request->only(['title', 'is_active', 'description']);
+        $data['slug'] = Str::slug($request->input('title'), '-');
+        $category->fill($data)->save();
+        return $category;
     }
 
     public function delete($id)

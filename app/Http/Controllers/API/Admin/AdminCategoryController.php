@@ -35,7 +35,23 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'title' => 'required|string|max:250',
+            'is_active' => 'required|numeric',
+            'description' => 'required|string',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
+
+        try {
+            $category = $this->categoryRepository->create($request);
+            return response()->json(['response' => 'success', 'category' => $category], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
@@ -46,7 +62,12 @@ class AdminCategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        try {
+            $cat = $this->categoryRepository->findById($category->id);
+            return response()->json(['response' => 'Success', 'category' => $cat], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
@@ -58,7 +79,23 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $rules = [
+            'title' => 'required|string|max:250',
+            'is_active' => 'required|numeric',
+            'description' => 'nullable|string',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
+
+        try {
+            $cat = $this->categoryRepository->update($request, $category->id);
+            return response()->json(['response' => 'Category Updated successfully', 'category' => $cat], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
@@ -70,8 +107,8 @@ class AdminCategoryController extends Controller
     public function destroy(Category $category)
     {
         try {
-            $category = $this->categoryRepository->delete($category->id);
-            return response()->json(['response' => 'Success', 'category' => $category], 200);
+            $cat = $this->categoryRepository->delete($category->id);
+            return response()->json(['response' => 'Success', 'category' => $cat], 200);
         } catch (\Illuminate\Database\QueryException $ex) {
             return response()->json(['response' => $ex->getMessage()], 404);
         }

@@ -51,8 +51,8 @@ class AdminProductController extends Controller
         }
 
         try {
-            $post = $this->productRepository->create($request);
-            return response()->json(['response' => 'success', 'post' => $post], 200);
+            $product = $this->productRepository->create($request);
+            return response()->json(['response' => 'success', 'product' => $product], 200);
         } catch (\Illuminate\Database\QueryException $ex) {
             return response()->json(['response' => $ex->getMessage()], 404);
         }
@@ -84,11 +84,11 @@ class AdminProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $rules = [
-            'title' => 'nullable|string|max:250',
-            'price' => 'nullable',
-            'qty' => 'nullable|numeric',
-            'category_id' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'title' => 'required|string|max:250',
+            'price' => 'required',
+            'qty' => 'required|numeric',
+            'category_id' => 'required|numeric',
+            'image' => 'required|string',
             'description' => 'nullable|string',
         ];
         $validator = Validator::make($request->all(), $rules);
