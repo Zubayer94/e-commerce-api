@@ -14,7 +14,7 @@ class ProductRepository implements CrudInterface
 
     public function getAll(Request $request)
     {
-        $length = $request->input('length') ? $request->input('length') : 15;
+        $length = $request->input('length');
         $qTitle = $request->input('title');
 
         $products = DB::table('products')
@@ -24,7 +24,11 @@ class ProductRepository implements CrudInterface
                         $query->where('products.title', 'like', "%$qTitle%");
                     })
                     ->orderBy('products.id', 'desc')
-                    ->paginate($length);
+                    ->get();
+        if (!empty($length)) {
+            // can get pagination data from collection using "spatie/laravel-collection-macros" package
+            return $products->paginate($length);
+        }
         return $products;
 
         // Eloquent way but query builder shines

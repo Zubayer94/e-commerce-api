@@ -27,4 +27,5 @@ Route::group([ 'prefix' => 'v1', 'middleware' => ['auth:sanctum'] ], function ()
 
     Route::apiResource('/products', 'Admin\AdminProductController');
     Route::apiResource('/categories', 'Admin\AdminCategoryController');
+    Route::apiResource('/orders', 'Admin\AdminOrderController');
 });
