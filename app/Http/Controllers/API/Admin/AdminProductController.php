@@ -39,8 +39,8 @@ class AdminProductController extends Controller
         $rules = [
             'title' => 'required|string|max:250',
             'price' => 'required',
-            'qty' => 'required|numeric|max:250',
-            'categoryId' => 'required|numeric',
+            'qty' => 'required|numeric',
+            'category_id' => 'required|numeric',
             'image' => 'required|string',
             'description' => 'required|string',
         ];
@@ -66,7 +66,12 @@ class AdminProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        try {
+            $product = $this->productRepository->findById($product->id);
+            return response()->json(['response' => 'Success', 'product' => $product], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
@@ -78,7 +83,26 @@ class AdminProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $rules = [
+            'title' => 'nullable|string|max:250',
+            'price' => 'nullable',
+            'qty' => 'nullable|numeric',
+            'category_id' => 'nullable|numeric',
+            'image' => 'nullable|string',
+            'description' => 'nullable|string',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
+
+        try {
+            $prod = $this->productRepository->update($request, $product->id);
+            return response()->json(['response' => 'Product Updated successfully', 'product' => $prod], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**

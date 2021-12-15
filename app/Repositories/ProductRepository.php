@@ -36,7 +36,7 @@ class ProductRepository implements CrudInterface
 
     public function create(Request $request)
     {
-        $data = $request->only(['title', 'slug', 'price', 'image', 'description', 'qty']);
+        $data = $request->only(['title', 'slug', 'price', 'image', 'category_id', 'description', 'qty']);
         $data['slug'] = Str::slug($request->input('title'), '-');
         $product = Product::create($data);
         $product = Product::findOrfail($product->id);
@@ -51,7 +51,9 @@ class ProductRepository implements CrudInterface
 
     public function update(Request $request, $id)
     {
-
+        $product = Product::findOrfail($id);
+        $product->fill($request->only(['title', 'slug', 'price', 'image', 'category_id', 'description', 'qty']))->save();
+        return $product;
     }
 
     public function delete($id)

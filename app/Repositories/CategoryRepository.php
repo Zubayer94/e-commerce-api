@@ -55,7 +55,7 @@ class CategoryRepository implements CrudInterface
 
     public function update(Request $request, $id)
     {
-
+        
     }
 
     public function delete($id)
