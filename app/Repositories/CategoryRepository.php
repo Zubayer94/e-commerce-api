@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Interfaces\CrudInterface;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ class CategoryRepository implements CrudInterface
     public function create(Request $request)
     {
         $data = $request->only(['title', 'slug', 'description', 'is_active']);
+        $data['slug'] = Str::slug($request->input('title'), '-');
         $category = Category::create($data);
         $category = Category::findOrfail($category->id);
         return $category;

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Interfaces\CrudInterface;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,7 @@ class ProductRepository implements CrudInterface
     public function create(Request $request)
     {
         $data = $request->only(['title', 'slug', 'price', 'image', 'description', 'qty']);
+        $data['slug'] = Str::slug($request->input('title'), '-');
         $product = Product::create($data);
         $product = Product::findOrfail($product->id);
         return $product;
