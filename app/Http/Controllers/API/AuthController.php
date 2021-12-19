@@ -21,6 +21,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'is_admin' => 'numeric',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -28,7 +29,7 @@ class AuthController extends Controller
             return response()->json($errors, 404);
         }
 
-        $userData = $request->only(['name', 'email']);
+        $userData = $request->only(['name', 'email', 'is_admin']);
         $userData['password'] = bcrypt($request->password);
         try {
             $user = User::create($userData);
@@ -59,6 +60,41 @@ class AuthController extends Controller
             if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
                 $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
                 return response(['user' => auth()->user(), 'token' => $accessToken], 200);
+            } else {
+                return response(['message' => 'Invalid credentials'], 404);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response(['message' => $ex->getMessage()],  400);
+        }
+    }
+
+    /**
+     * Admin login
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function loginAdmin(Request $request)
+    {
+        $rules = [
+            'email' => 'required|email',
+            'password' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
+        try {
+            if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+                if (auth()->user()->is_admin) {
+                    $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
+                    return response(['user' => auth()->user(), 'token' => $accessToken], 200);
+                }
+                else {
+                    auth()->logout();
+                    return response(['message' => 'Only admin user can login!'], 404);
+                }
             } else {
                 return response(['message' => 'Invalid credentials'], 404);
             }

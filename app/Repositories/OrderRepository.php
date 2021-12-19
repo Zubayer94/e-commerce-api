@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Interfaces\CrudInterface;
@@ -32,9 +33,15 @@ class OrderRepository implements CrudInterface
     public function create(Request $request)
     {
         $data = $request->only(['unit', 'product_price', 'product_id']);
-        $data['uid'] = 'Or-'. time() . Str::random(1) . rand(10, 99);
+        $data['UID'] = 'Or-'. time() . Str::random(1) . rand(10, 99);
         $data['user_id'] = Auth::id();
         $data['status'] = 'Processing';
+
+        // handle product qty
+        $product = Product::findOrfail($request->input( 'product_id'));
+        $product->qty = $product->qty - $request->input('unit');
+        $product->save();
+
         $order = Order::create($data);
         $order = Order::findOrfail($order->id);
         return $order;
