@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group([ 'prefix' => 'v1', 'middleware' => ['auth:sanctum'] ], function () {
+    // for admin
     Route::post('/register', 'AuthController@register')->withoutMiddleware('auth:sanctum');
     Route::post('/login', 'AuthController@login')->withoutMiddleware('auth:sanctum');
     Route::get('/user', 'AuthController@getAuthUser');
@@ -28,4 +29,7 @@ Route::group([ 'prefix' => 'v1', 'middleware' => ['auth:sanctum'] ], function ()
     Route::apiResource('/products', 'Admin\AdminProductController');
     Route::apiResource('/categories', 'Admin\AdminCategoryController');
     Route::apiResource('/orders', 'Admin\AdminOrderController');
+
+    // for buyers
+    Route::resource('/buyer-orders', 'OrderController');
 });

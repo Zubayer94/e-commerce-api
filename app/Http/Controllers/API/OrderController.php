@@ -5,17 +5,26 @@ namespace App\Http\Controllers\API;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\OrderRepository;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    public $orderRepository;
+
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
     }
 
     /**
@@ -26,40 +35,48 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $rules = [
+            'unit' => 'required|numeric',
+            'product_price' => 'required|numeric',
+            'product_id' => 'required|numeric'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
+        try {
+            $order = $this->orderRepository->create($request);
+            return response()->json(['response' => 'success', 'order' => $order], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Order $order)
     {
-        //
-    }
+        $rules = [
+            'unit' => 'required|numeric'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json($errors, 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
+        try {
+            $prod = $this->orderRepository->update($request, $order->id);
+            return response()->json(['response' => 'Order Updated successfully', 'order' => $prod], 200);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['response' => $ex->getMessage()], 404);
+        }
     }
 }

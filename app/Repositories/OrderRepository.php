@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Interfaces\CrudInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OrderRepository implements CrudInterface
 {
@@ -30,8 +31,10 @@ class OrderRepository implements CrudInterface
 
     public function create(Request $request)
     {
-        $data = $request->only(['status', 'unit', 'product_price', 'product_id', 'user_id']);
+        $data = $request->only(['unit', 'product_price', 'product_id']);
         $data['uid'] = 'Or-'. time() . Str::random(1) . rand(10, 99);
+        $data['user_id'] = Auth::id();
+        $data['status'] = 'Processing';
         $order = Order::create($data);
         $order = Order::findOrfail($order->id);
         return $order;
