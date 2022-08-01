@@ -17,11 +17,10 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('sku');
-            $table->double('price', 8, 2);
+            $table->integer('price');
             $table->text('description');
-            $table->foreignId('main_image_id')->nullable()->constrained("image_libraries")->nullOnDelete();
-            $table->longText('image');
-            $table->unsignedSmallInteger('qty');
+            $table->foreignId('main_image_id')->constrained("image_libraries");
+            $table->unsignedSmallInteger('unit');
             $table->foreignId('category_id')->nullable()->constrained("categories");
             $table->timestamps();
         });
